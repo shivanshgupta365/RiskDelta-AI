@@ -21,13 +21,14 @@ export function registerCommercialPlaceholderRoutes(
       handler: async (request, reply) => {
         const auth = await resolveAuthContext(request);
         const access = resolvePremiumApiAccess({ auth, request });
+        const decision = access.decision;
 
-        if (!access.decision.allowed) {
-          if (access.decision.reason === "unauthenticated") {
+        if (decision.allowed === false) {
+          if (decision.reason === "unauthenticated") {
             return reply.status(401).send({ error: "Unauthorized" });
           }
 
-          if (access.decision.reason === "community_build") {
+          if (decision.reason === "community_build") {
             return reply.status(403).send({
               code: "commercial_feature_unavailable",
               error: `${feature} is reserved for the RiskDelta commercial edition.`,
