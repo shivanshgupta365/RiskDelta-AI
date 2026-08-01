@@ -16,6 +16,7 @@
     "@riskdelta/config": "workspace:*",
     "@riskdelta/policy-engine": "workspace:*",
     "@riskdelta/risk-engine": "workspace:*",
+    "@riskdelta/runtime-processing": "workspace:*",
     "bullmq": "^5.43.0",
     "dotenv": "^16.4.7",
     "ioredis": "^5.6.1"

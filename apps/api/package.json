@@ -19,6 +19,7 @@
     "@riskdelta/config": "workspace:*",
     "@riskdelta/policy-engine": "workspace:*",
     "@riskdelta/risk-engine": "workspace:*",
+    "@riskdelta/runtime-processing": "workspace:*",
     "@riskdelta/shared": "workspace:*",
     "@riskdelta/types": "workspace:*",
     "bcryptjs": "^3.0.2",

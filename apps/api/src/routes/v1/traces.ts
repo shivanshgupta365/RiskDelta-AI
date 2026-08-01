@@ -1,4 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
+import { loadApiEnv } from "@riskdelta/config";
+import { processRuntimeTrace, type RuntimeProcessingJob } from "@riskdelta/runtime-processing";
 import { IngestTraceRequestSchema } from "@riskdelta/types";
 import { createId } from "@riskdelta/shared";
 import { prisma } from "../../db/prisma";
@@ -9,8 +11,9 @@ import {
   requireScopes,
   type AuthContext,
 } from "../../auth/context";
-import { runtimeJobQueue } from "../../queues/runtime-jobs";
 import { writeAuditLog } from "../../audit/audit-log";
+
+const env = loadApiEnv();
 
 type TraceQuery = {
   orgId?: string;
@@ -180,7 +183,7 @@ export async function registerTraceRoutes(app: FastifyInstance) {
           sessionId: parsed.data.sessionId,
           toolSummary: toolNames.join(", "),
           desiredTargets,
-          tags: ["queued", "ingested"],
+          tags: [env.RUNTIME_PROCESSING_MODE === "queue" ? "queued" : "processing", "ingested"],
           riskScore: 0,
           confidence: 0,
           severity: "LOW",
@@ -188,7 +191,10 @@ export async function registerTraceRoutes(app: FastifyInstance) {
           blocked: false,
           redacted: false,
           selectedModel: null,
-          explainability: "Queued for async runtime evaluation.",
+          explainability:
+            env.RUNTIME_PROCESSING_MODE === "queue"
+              ? "Queued for async runtime evaluation."
+              : "Processing synchronous runtime evaluation.",
           dimensionScores: [],
           runtimeActions: [],
           signals: [],
@@ -219,22 +225,50 @@ export async function registerTraceRoutes(app: FastifyInstance) {
         },
       });
 
-      const runtimeJob = await runtimeJobQueue.add(
-        "process-trace",
-        {
-          traceId: trace.id,
-          traceSessionId: session.id,
-          organizationId: project.organizationId,
+      const runtimePayload: RuntimeProcessingJob = {
+        traceId: trace.id,
+        traceSessionId: session.id,
+        organizationId: project.organizationId,
+        prompt: parsed.data.prompt,
+        toolCalls: toolNames,
+        destinationCount: desiredTargets.length,
+        containsSensitiveData: containsSensitiveData({
           prompt: parsed.data.prompt,
-          toolCalls: toolNames,
-          destinationCount: desiredTargets.length,
-          containsSensitiveData: containsSensitiveData({
-            prompt: parsed.data.prompt,
-            responsePreview: parsed.data.responsePreview,
-            metadata: parsed.data.metadata,
-          }),
-        },
-        {
+          responsePreview: parsed.data.responsePreview,
+          metadata: parsed.data.metadata,
+        }),
+      };
+
+      let queueJobId: string | null = null;
+      let finalVerdict = trace.verdict;
+      let finalSeverity = trace.severity;
+
+      if (env.RUNTIME_PROCESSING_MODE === "sync") {
+        const processingId = createId("sync");
+        await prisma.traceEvent.create({
+          data: {
+            organizationId: project.organizationId,
+            traceSessionId: session.id,
+            eventType: "RUNTIME_PROCESSING_STARTED",
+            payload: {
+              traceId: trace.id,
+              processingId,
+              mode: "sync",
+            },
+          },
+        });
+
+        const result = await processRuntimeTrace({
+          payload: runtimePayload,
+          prisma,
+          jobId: processingId,
+          actorName: "riskdelta-api",
+        });
+        finalVerdict = result.policy.verdict;
+        finalSeverity = result.risk.severity;
+      } else {
+        const { runtimeJobQueue } = await import("../../queues/runtime-jobs");
+        const runtimeJob = await runtimeJobQueue.add("process-trace", runtimePayload, {
           attempts: 3,
           removeOnComplete: 1000,
           removeOnFail: 2000,
@@ -242,20 +276,21 @@ export async function registerTraceRoutes(app: FastifyInstance) {
             type: "exponential",
             delay: 1500,
           },
-        },
-      );
+        });
+        queueJobId = runtimeJob.id ? String(runtimeJob.id) : null;
 
-      await prisma.traceEvent.create({
-        data: {
-          organizationId: project.organizationId,
-          traceSessionId: session.id,
-          eventType: "RUNTIME_JOB_QUEUED",
-          payload: {
-            traceId: trace.id,
-            jobId: runtimeJob.id,
+        await prisma.traceEvent.create({
+          data: {
+            organizationId: project.organizationId,
+            traceSessionId: session.id,
+            eventType: "RUNTIME_JOB_QUEUED",
+            payload: {
+              traceId: trace.id,
+              jobId: queueJobId,
+            },
           },
-        },
-      });
+        });
+      }
 
       await writeAuditLog({
         organizationId: project.organizationId,
@@ -266,21 +301,23 @@ export async function registerTraceRoutes(app: FastifyInstance) {
         metadata: {
           projectId: project.id,
           requestId: trace.requestId,
-          queueJobId: runtimeJob.id,
+          processingMode: env.RUNTIME_PROCESSING_MODE,
+          queueJobId,
         },
       });
 
       return reply.status(202).send({
         accepted: true,
-        queueJobId: runtimeJob.id,
+        processingMode: env.RUNTIME_PROCESSING_MODE,
+        queueJobId,
         trace: {
           id: trace.id,
           requestId: trace.requestId,
           organizationId: trace.organizationId,
           projectId: trace.projectId,
           traceSessionId: session.id,
-          verdict: trace.verdict,
-          severity: trace.severity,
+          verdict: finalVerdict,
+          severity: finalSeverity,
           createdAt: trace.createdAt,
         },
       });

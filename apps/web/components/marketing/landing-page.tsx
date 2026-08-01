@@ -4,8 +4,22 @@ import Link from "next/link";
 import { useState } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { motion } from "framer-motion";
-import { Activity, AlertTriangle, ArrowRight, CheckCircle2, Copy, Menu, ShieldAlert, Terminal, X } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle2,
+  Copy,
+  Github,
+  LoaderCircle,
+  Menu,
+  ShieldAlert,
+  Terminal,
+  X,
+} from "lucide-react";
 import { BrandMark } from "@/components/ui/brand-mark";
+
+const githubUrl = "https://github.com/shivanshgupta365/RiskDelta-AI";
 
 const reveal = {
   initial: { opacity: 0, y: 20 },
@@ -147,6 +161,39 @@ function SectionLabel({ children }: { children: ReactNode }) {
   return <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#a0a8a0]">{children}</div>;
 }
 
+function PublicDemoButton({
+  className,
+  onEntered,
+}: {
+  className: string;
+  onEntered?: () => void;
+}) {
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+
+  async function enterDemo() {
+    setStatus("loading");
+    try {
+      const response = await fetch("/api/auth/demo", { method: "POST" });
+      const payload = (await response.json()) as { redirectTo?: string; error?: string };
+      if (!response.ok || !payload.redirectTo) {
+        throw new Error(payload.error ?? "Demo unavailable");
+      }
+      onEntered?.();
+      window.location.assign(payload.redirectTo);
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  return (
+    <button type="button" onClick={enterDemo} disabled={status === "loading"} className={className} aria-live="polite">
+      {status === "loading" ? <LoaderCircle className="size-4 animate-spin" /> : null}
+      {status === "loading" ? "Opening demo" : status === "error" ? "Retry live demo" : "Open live demo"}
+      {status === "idle" ? <ArrowRight className="size-4" /> : null}
+    </button>
+  );
+}
+
 function LandingNav() {
   const [open, setOpen] = useState(false);
 
@@ -163,13 +210,19 @@ function LandingNav() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="hidden items-center gap-3 md:flex">
           <Link href="/signin" className="font-sans text-sm font-medium text-[#a0a8a0] transition-colors hover:text-[#f5f7f4]">
             Sign in
           </Link>
-          <Link href="/signup" className="landing-nav-primary sharp-edge">
-            Try free
-          </Link>
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-10 items-center gap-2 border border-[#1b1f1b] px-4 font-sans text-sm font-medium text-[#f5f7f4] transition-colors hover:border-[#394039] hover:bg-[#111411]"
+          >
+            <Github className="size-4" /> GitHub
+          </a>
+          <PublicDemoButton className="landing-nav-primary sharp-edge inline-flex items-center gap-2 disabled:cursor-wait disabled:opacity-70" />
         </div>
 
         <button
@@ -196,7 +249,7 @@ function LandingNav() {
               </Link>
             ))}
           </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
             <Link
               href="/signin"
               onClick={() => setOpen(false)}
@@ -204,13 +257,19 @@ function LandingNav() {
             >
               Sign in
             </Link>
-            <Link
-              href="/signup"
+            <a
+              href={githubUrl}
+              target="_blank"
+              rel="noreferrer"
               onClick={() => setOpen(false)}
-              className="flex min-h-10 items-center justify-center bg-[#f5f7f4] px-4 text-sm font-semibold text-[#050505] transition-colors hover:bg-white"
+              className="flex min-h-10 items-center justify-center gap-2 border border-[#1b1f1b] bg-transparent px-4 text-sm font-medium text-[#f5f7f4] transition-colors hover:bg-[#111411]"
             >
-              Try free
-            </Link>
+              <Github className="size-4" /> GitHub
+            </a>
+            <PublicDemoButton
+              onEntered={() => setOpen(false)}
+              className="flex min-h-10 items-center justify-center gap-2 bg-[#f5f7f4] px-4 text-sm font-semibold text-[#050505] transition-colors hover:bg-white disabled:cursor-wait disabled:opacity-70"
+            />
           </div>
         </div>
       ) : null}
@@ -323,15 +382,19 @@ function HeroSection() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <Link href="/signup" className="landing-hero-primary sharp-edge">
-              Try free <ArrowRight className="size-4" />
-            </Link>
-            <Link href="/pricing" className="landing-hero-secondary sharp-edge">
-              Book demo
+            <PublicDemoButton className="landing-hero-primary sharp-edge inline-flex items-center gap-2 disabled:cursor-wait disabled:opacity-70" />
+            <a href={githubUrl} target="_blank" rel="noreferrer" className="landing-hero-secondary sharp-edge inline-flex items-center gap-2">
+              <Github className="size-4" /> View on GitHub
+            </a>
+            <Link
+              href="/signup"
+              className="ml-2 font-sans text-sm text-[#a0a8a0] underline decoration-[#1b1f1b] underline-offset-4 transition-colors hover:text-[#a3ff12] hover:decoration-[#a3ff12]"
+            >
+              Create account
             </Link>
             <Link
               href="#how-it-works"
-              className="ml-2 font-sans text-sm text-[#a0a8a0] underline decoration-[#1b1f1b] underline-offset-4 transition-colors hover:text-[#a3ff12] hover:decoration-[#a3ff12]"
+              className="font-sans text-sm text-[#a0a8a0] underline decoration-[#1b1f1b] underline-offset-4 transition-colors hover:text-[#a3ff12] hover:decoration-[#a3ff12]"
             >
               See how it works
             </Link>
@@ -917,10 +980,11 @@ function ClosingCta() {
         </p>
 
         <div className="relative z-10 mb-16 mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Link href="/signup" className="landing-hero-primary sharp-edge">
-            Try free
-          </Link>
-          <Link href="/docs-preview" className="landing-hero-secondary sharp-edge">
+          <PublicDemoButton className="landing-hero-primary sharp-edge inline-flex items-center gap-2 disabled:cursor-wait disabled:opacity-70" />
+          <a href={githubUrl} target="_blank" rel="noreferrer" className="landing-hero-secondary sharp-edge inline-flex items-center gap-2">
+            <Github className="size-4" /> View on GitHub
+          </a>
+          <Link href="/docs-preview" className="font-sans text-sm text-[#a0a8a0] underline underline-offset-4 hover:text-[#a3ff12]">
             View docs
           </Link>
         </div>

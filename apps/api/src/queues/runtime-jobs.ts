@@ -2,6 +2,9 @@ import { Queue } from "bullmq";
 import { loadApiEnv } from "@riskdelta/config";
 
 const env = loadApiEnv();
+if (!env.REDIS_URL) {
+  throw new Error("REDIS_URL is required to initialize the runtime job queue");
+}
 const redis = new URL(env.REDIS_URL);
 
 export type RuntimeProcessingJob = {

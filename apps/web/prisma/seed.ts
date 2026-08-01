@@ -65,8 +65,8 @@ async function main() {
     },
   });
 
-  const analysts = await prisma.user.createMany({
-    data: [
+  const analysts = await Promise.all(
+    [
       {
         fullName: "Jonas Patel",
         email: "jonas@riskdelta.dev",
@@ -79,7 +79,16 @@ async function main() {
         companyName: "Northstar Dynamics",
         passwordHash,
       },
-    ],
+    ].map((data) => prisma.user.create({ data })),
+  );
+
+  const publicDemoUser = await prisma.user.create({
+    data: {
+      fullName: "RiskDelta Demo Viewer",
+      email: process.env.PUBLIC_DEMO_USER_EMAIL ?? "demo@riskdelta.dev",
+      companyName: "Northstar Dynamics",
+      passwordHash,
+    },
   });
 
   const org = await prisma.organization.create({
@@ -91,13 +100,12 @@ async function main() {
     },
   });
 
-  const users = await prisma.user.findMany({ where: { companyName: "Northstar Dynamics" } });
   await prisma.membership.createMany({
-    data: users.map((user, index) => ({
-      userId: user.id,
-      organizationId: org.id,
-      role: index === 0 ? "OWNER" : "ANALYST",
-    })),
+    data: [
+      { userId: owner.id, organizationId: org.id, role: "OWNER" },
+      ...analysts.map((user) => ({ userId: user.id, organizationId: org.id, role: "OPERATOR" })),
+      { userId: publicDemoUser.id, organizationId: org.id, role: "VIEWER" },
+    ],
   });
 
   const projects = await Promise.all(
@@ -256,6 +264,20 @@ async function main() {
   await prisma.onboardingState.create({
     data: {
       userId: owner.id,
+      organizationId: org.id,
+      projectId: projects[0].id,
+      currentStep: 5,
+      completed: true,
+      selectedIntegrationType: quickstartPresets[0].integrationType,
+      selectedAiStack: "OpenAI",
+      framework: projects[0].framework,
+      environment: projects[0].environment,
+    },
+  });
+
+  await prisma.onboardingState.create({
+    data: {
+      userId: publicDemoUser.id,
       organizationId: org.id,
       projectId: projects[0].id,
       currentStep: 5,
@@ -490,7 +512,7 @@ async function main() {
           projects: projects.length,
           apiKeyPrefix: apiKey.prefix,
           seedApiKeyMasked: maskApiKey(rawKey),
-          extraUsers: analysts.count,
+          extraUsers: analysts.length + 1,
         },
       },
     ],
@@ -498,6 +520,7 @@ async function main() {
 
   console.log("Seeded RiskDelta");
   console.log(`Demo user: ${owner.email}`);
+  console.log(`Public demo viewer: ${publicDemoUser.email}`);
   console.log("Demo password: [redacted] (configure DEMO_USER_PASSWORD in local env)");
   console.log(`Seed API key: [redacted], suffix=${rawKey.slice(-4)} (rotate after first use)`);
 }

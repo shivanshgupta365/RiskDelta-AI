@@ -22,9 +22,20 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RiskDelta",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+  title: "RiskDelta AI — Runtime Control Plane",
   description:
     "Autonomous AI Risk Intelligence & Runtime Control Plane for modern AI applications and agents.",
+  openGraph: {
+    title: "RiskDelta AI — Runtime Control Plane",
+    description: "Control unsafe AI runtime behavior before it reaches production.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RiskDelta AI — Runtime Control Plane",
+    description: "Control unsafe AI runtime behavior before it reaches production.",
+  },
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",

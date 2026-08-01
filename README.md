@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/brand/riskdelta-product-banner.png" alt="RiskDelta AI runtime control plane" width="100%" />
+</p>
+
 <h1 align="center">⚡ RiskDelta AI</h1>
 
 <p align="center">
@@ -424,7 +428,7 @@ RiskDelta uses a source-available model.
 ### Local Setup
 
 ```bash
-git clone https://github.com/your-username/riskdelta-ai
+git clone https://github.com/shivanshgupta365/RiskDelta-AI.git
 cd riskdelta-ai
 
 cp .env.example .env

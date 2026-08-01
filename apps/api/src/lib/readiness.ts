@@ -5,9 +5,12 @@ import { prisma } from "../db/prisma";
 const env = loadApiEnv();
 
 export async function getApiReadiness() {
-  const checks = {
+  const checks: {
+    database: boolean;
+    redis: boolean | "disabled";
+  } = {
     database: false,
-    redis: false,
+    redis: env.RUNTIME_PROCESSING_MODE === "sync" ? "disabled" : false,
   };
 
   try {
@@ -17,23 +20,26 @@ export async function getApiReadiness() {
     checks.database = false;
   }
 
-  const redis = new Redis(env.REDIS_URL, {
-    lazyConnect: true,
-    maxRetriesPerRequest: 1,
-  });
+  if (env.RUNTIME_PROCESSING_MODE === "queue" && env.REDIS_URL) {
+    const redis = new Redis(env.REDIS_URL, {
+      lazyConnect: true,
+      maxRetriesPerRequest: 1,
+    });
 
-  try {
-    await redis.connect();
-    checks.redis = (await redis.ping()) === "PONG";
-  } catch {
-    checks.redis = false;
-  } finally {
-    redis.disconnect();
+    try {
+      await redis.connect();
+      checks.redis = (await redis.ping()) === "PONG";
+    } catch {
+      checks.redis = false;
+    } finally {
+      redis.disconnect();
+    }
   }
 
   return {
-    ok: checks.database && checks.redis,
+    ok: checks.database && (checks.redis === true || checks.redis === "disabled"),
     service: "riskdelta-api",
+    processingMode: env.RUNTIME_PROCESSING_MODE,
     timestamp: new Date().toISOString(),
     checks,
   };
