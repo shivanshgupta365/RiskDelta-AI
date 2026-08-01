@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { FastifyInstance, FastifyRequest } from "fastify";
+import { loadApiEnv } from "@riskdelta/config";
 import { COMMERCIAL_EDITION } from "@riskdelta/types";
 import {
   requireAuth,
@@ -9,6 +10,8 @@ import {
 } from "../../auth/context.js";
 import { prisma } from "../../db/prisma.js";
 import { writeAuditLog } from "../../audit/audit-log.js";
+
+const env = loadApiEnv();
 
 type QuickstartQuery = { orgId?: string };
 
@@ -46,7 +49,7 @@ const quickstartPresets = [
       "POST a sample trace to /v1/ingest/traces.",
       "Confirm trace and risk summary on /app/tracevault.",
     ],
-    expectedResults: ["Trace accepted", "Worker pipeline completes", "Runtime controls and policy matches visible"],
+    expectedResults: ["Trace accepted", "Runtime pipeline completes", "Runtime controls and policy matches visible"],
   },
   {
     label: "Connectors",
@@ -115,7 +118,7 @@ export async function registerQuickstartRoutes(app: FastifyInstance) {
 
     return {
       env: {
-        RISKDELTA_BASE_URL: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+        RISKDELTA_BASE_URL: env.RISKDELTA_API_URL.replace(/\/$/, ""),
         RISKDELTA_PROJECT_ID: project.slug,
         RISKDELTA_API_KEY: `${apiKey?.prefix ?? "rd_demo"}…`,
         RISKDELTA_ORG: organization.name,

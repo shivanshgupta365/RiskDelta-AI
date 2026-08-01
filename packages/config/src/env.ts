@@ -43,6 +43,7 @@ const apiSchema = baseSchema
     REDIS_URL: optionalNonEmptyString,
     API_HOST: z.string().default("0.0.0.0"),
     API_PORT: z.coerce.number().int().positive().default(4100),
+    RISKDELTA_API_URL: z.string().url().default("http://localhost:4100"),
     WEB_APP_ORIGIN: z.string().url(),
     CORS_ALLOWED_ORIGINS: z.string().optional(),
     API_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(200),
