@@ -577,39 +577,40 @@ Move fast with control.
 
 ---
 
-## 🧪 Local UI Screenshots
+## 🧪 Live Product Screenshots
 
-Captured from a live authenticated local run to verify UI rendering, seeded data, and operator workflows.
+Captured from the public Vercel deployment with the read-only demo account and seeded showcase workspace.
 
 ### Marketing hero
 
-![RiskDelta marketing hero](docs/screenshots/launch-2026-08-02/01-marketing-hero.png)
+![RiskDelta marketing hero](docs/screenshots/vercel-launch-2026-08-02/01-landing-hero.png)
 
 ### Operator overview
 
-![RiskDelta operator overview](docs/screenshots/launch-2026-08-02/02-console-overview.png)
-
-### Working quickstart
-
-![RiskDelta quickstart](docs/screenshots/launch-2026-08-02/03-quickstart-working.png)
-
-### TraceVault queue
-
-![RiskDelta TraceVault queue](docs/screenshots/launch-2026-08-02/04-tracevault-queue.png)
-
-### Blocked production trace
-
-![RiskDelta blocked trace evidence](docs/screenshots/launch-2026-08-02/05-blocked-trace-evidence.png)
+![RiskDelta operator overview](docs/screenshots/vercel-launch-2026-08-02/02-operator-overview.png)
 
 ### Application coverage
 
-![RiskDelta application coverage](docs/screenshots/launch-2026-08-02/06-applications-coverage.png)
+![RiskDelta application coverage](docs/screenshots/vercel-launch-2026-08-02/03-applications.png)
+
+### TraceVault queue
+
+![RiskDelta TraceVault queue](docs/screenshots/vercel-launch-2026-08-02/04-tracevault.png)
+
+### Synchronously evaluated production trace
+
+![RiskDelta production trace evidence](docs/screenshots/vercel-launch-2026-08-02/05-trace-detail.png)
+
+### Working quickstart
+
+![RiskDelta quickstart](docs/screenshots/vercel-launch-2026-08-02/06-quickstart.png)
 
 ---
 
 ## 🎥 Demo
 
-- Live app: https://tryriskdelta.netlify.app
+- Live app: https://riskdelta-ai.vercel.app
+- GitHub: https://github.com/shivanshgupta365/RiskDelta-AI
 - Demo flow: Runtime event → Risk score → Policy verdict → Enforcement → TraceVault evidence
 
 ---
