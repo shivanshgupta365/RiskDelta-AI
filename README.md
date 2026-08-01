@@ -610,7 +610,6 @@ Captured from a live authenticated local run to verify UI rendering, seeded data
 ## 🎥 Demo
 
 - Live app: https://tryriskdelta.netlify.app
-- Loom walkthrough: Add your Loom link
 - Demo flow: Runtime event → Risk score → Policy verdict → Enforcement → TraceVault evidence
 
 ---
