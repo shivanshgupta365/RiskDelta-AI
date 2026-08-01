@@ -1,11 +1,16 @@
 import { z } from "zod";
 import { RiskDeltaEditionSchema } from "@riskdelta/types";
 
+const optionalNonEmptyString = z.preprocess(
+  (value) => (typeof value === "string" && value.trim().length === 0 ? undefined : value),
+  z.string().min(1).optional(),
+);
+
 const baseSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
   RISKDELTA_EDITION: RiskDeltaEditionSchema.default("community-source-available"),
-  RISKDELTA_PREMIUM_MODULE_PATH: z.string().min(1).optional(),
+  RISKDELTA_PREMIUM_MODULE_PATH: optionalNonEmptyString,
   DATABASE_URL: z.string().min(1),
   REDIS_URL: z.string().min(1),
   AUTH_SECRET: z.string().min(32),
