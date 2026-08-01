@@ -67,16 +67,32 @@ jobs:
   deploy:
     needs: build-and-publish
     runs-on: ubuntu-latest
-    if: ${{ secrets.VM_SSH_HOST != '' && secrets.VM_SSH_USER != '' && secrets.VM_SSH_PRIVATE_KEY != '' }}
+    env:
+      VM_SSH_HOST: ${{ secrets.VM_SSH_HOST }}
+      VM_SSH_USER: ${{ secrets.VM_SSH_USER }}
+      VM_SSH_PRIVATE_KEY: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+      VM_DEPLOY_PATH: ${{ secrets.VM_DEPLOY_PATH }}
     steps:
+      - name: Check deployment configuration
+        id: deployment-config
+        shell: bash
+        run: |
+          if [[ -n "$VM_SSH_HOST" && -n "$VM_SSH_USER" && -n "$VM_SSH_PRIVATE_KEY" && -n "$VM_DEPLOY_PATH" ]]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "VM deployment secrets are not configured; skipping deploy."
+          fi
+
       - name: Deploy to VM
+        if: steps.deployment-config.outputs.enabled == 'true'
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.VM_SSH_HOST }}
-          username: ${{ secrets.VM_SSH_USER }}
-          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          host: ${{ env.VM_SSH_HOST }}
+          username: ${{ env.VM_SSH_USER }}
+          key: ${{ env.VM_SSH_PRIVATE_KEY }}
           script: |
-            cd ${{ secrets.VM_DEPLOY_PATH }}
+            cd ${{ env.VM_DEPLOY_PATH }}
             git fetch --tags origin
             git checkout ${{ github.ref_name }}
             docker compose -f docker-compose.prod.yml pull
