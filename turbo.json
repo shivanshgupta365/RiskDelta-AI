@@ -12,6 +12,7 @@
         "CORS_ALLOWED_ORIGINS",
         "DATABASE_URL",
         "ENCRYPTION_KEY",
+        "LOG_LEVEL",
         "NEXT_PUBLIC_APP_URL",
         "NEXT_PUBLIC_RISKDELTA_EDITION",
         "PUBLIC_DEMO_ENABLED",

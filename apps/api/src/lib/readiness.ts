@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import { Redis } from "ioredis";
 import { loadApiEnv } from "@riskdelta/config";
 import { prisma } from "../db/prisma";
 
