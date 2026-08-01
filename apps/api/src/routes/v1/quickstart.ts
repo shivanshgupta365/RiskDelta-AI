@@ -6,9 +6,9 @@ import {
   requireRoleForOrganization,
   requireScopes,
   type AuthContext,
-} from "../../auth/context";
-import { prisma } from "../../db/prisma";
-import { writeAuditLog } from "../../audit/audit-log";
+} from "../../auth/context.js";
+import { prisma } from "../../db/prisma.js";
+import { writeAuditLog } from "../../audit/audit-log.js";
 
 type QuickstartQuery = { orgId?: string };
 

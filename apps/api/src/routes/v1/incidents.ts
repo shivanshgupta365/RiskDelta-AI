@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { registerCommercialPlaceholderRoutes } from "./commercial";
+import { registerCommercialPlaceholderRoutes } from "./commercial.js";
 
 export async function registerIncidentRoutes(app: FastifyInstance) {
   registerCommercialPlaceholderRoutes(app, "incidents", [

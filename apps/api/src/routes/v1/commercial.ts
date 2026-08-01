@@ -1,8 +1,8 @@
 import type { FastifyInstance, HTTPMethods } from "fastify";
 import type { CommercialFeatureId } from "@riskdelta/types";
-import { resolvePremiumApiAccess } from "../../auth/premium-access";
-import { resolveAuthContext } from "../../auth/context";
-import { resolvePremiumApiHandler } from "../../lib/premium-module";
+import { resolvePremiumApiAccess } from "../../auth/premium-access.js";
+import { resolveAuthContext } from "../../auth/context.js";
+import { resolvePremiumApiHandler } from "../../lib/premium-module.js";
 
 type CommercialRoute = {
   method: HTTPMethods;

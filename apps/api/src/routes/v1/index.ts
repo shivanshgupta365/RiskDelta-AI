@@ -1,15 +1,15 @@
 import type { FastifyInstance } from "fastify";
 import { scoreRisk } from "@riskdelta/risk-engine";
 import { evaluatePolicies } from "@riskdelta/policy-engine";
-import { registerPhase2Routes } from "./phase2";
-import { registerPolicyRoutes } from "./policies";
-import { registerRiskRoutes } from "./risk";
-import { registerIncidentRoutes } from "./incidents";
-import { registerRuntimeControlRoutes } from "./runtime-controls";
-import { registerIntegrationRoutes } from "./integrations";
-import { registerQuickstartRoutes } from "./quickstart";
-import { registerSettingsRoutes } from "./settings";
-import { registerTraceRoutes } from "./traces";
+import { registerPhase2Routes } from "./phase2.js";
+import { registerPolicyRoutes } from "./policies.js";
+import { registerRiskRoutes } from "./risk.js";
+import { registerIncidentRoutes } from "./incidents.js";
+import { registerRuntimeControlRoutes } from "./runtime-controls.js";
+import { registerIntegrationRoutes } from "./integrations.js";
+import { registerQuickstartRoutes } from "./quickstart.js";
+import { registerSettingsRoutes } from "./settings.js";
+import { registerTraceRoutes } from "./traces.js";
 
 export async function registerV1Routes(app: FastifyInstance) {
   app.get("/", async () => ({

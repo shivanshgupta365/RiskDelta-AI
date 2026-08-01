@@ -28,6 +28,7 @@
     }
   },
   "devDependencies": {
+    "@types/node": "^20.17.30",
     "pnpm": "^10.6.2",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3"

@@ -1,7 +1,7 @@
 import { pathToFileURL } from "node:url";
 import { COMMERCIAL_EDITION, type CommercialFeatureId } from "@riskdelta/types";
 import { loadApiEnv } from "@riskdelta/config";
-import type { PremiumApiContext } from "../auth/premium-access";
+import type { PremiumApiContext } from "../auth/premium-access.js";
 
 type ApiRouteHandler = (request: unknown, reply: unknown) => Promise<unknown> | unknown;
 type PremiumApiResolver = (args: {

@@ -20,7 +20,12 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@riskdelta/config": ["../../packages/config/src/env.ts"],
+      "@riskdelta/policy-engine": ["../../packages/policy-engine/src/index.ts"],
+      "@riskdelta/risk-engine": ["../../packages/risk-engine/src/index.ts"],
+      "@riskdelta/shared": ["../../packages/shared/src/index.ts"],
+      "@riskdelta/types": ["../../packages/types/src/index.ts"]
     }
   },
   "include": [

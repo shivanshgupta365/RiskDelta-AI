@@ -3,15 +3,15 @@ import { loadApiEnv } from "@riskdelta/config";
 import { processRuntimeTrace, type RuntimeProcessingJob } from "@riskdelta/runtime-processing";
 import { IngestTraceRequestSchema } from "@riskdelta/types";
 import { createId } from "@riskdelta/shared";
-import { prisma } from "../../db/prisma";
+import { prisma } from "../../db/prisma.js";
 import {
   canAccessOrganization,
   requireAuth,
   requireRoleForOrganization,
   requireScopes,
   type AuthContext,
-} from "../../auth/context";
-import { writeAuditLog } from "../../audit/audit-log";
+} from "../../auth/context.js";
+import { writeAuditLog } from "../../audit/audit-log.js";
 
 const env = loadApiEnv();
 
@@ -267,7 +267,7 @@ export async function registerTraceRoutes(app: FastifyInstance) {
         finalVerdict = result.policy.verdict;
         finalSeverity = result.risk.severity;
       } else {
-        const { runtimeJobQueue } = await import("../../queues/runtime-jobs");
+        const { runtimeJobQueue } = await import("../../queues/runtime-jobs.js");
         const runtimeJob = await runtimeJobQueue.add("process-trace", runtimePayload, {
           attempts: 3,
           removeOnComplete: 1000,

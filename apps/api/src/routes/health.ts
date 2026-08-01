@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { getApiReadiness } from "../lib/readiness";
+import { getApiReadiness } from "../lib/readiness.js";
 
 export async function registerHealthRoutes(app: FastifyInstance) {
   app.get("/healthz", async () => ({

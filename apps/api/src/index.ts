@@ -6,8 +6,8 @@ import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 import { loadApiEnv } from "@riskdelta/config";
-import { registerHealthRoutes } from "./routes/health";
-import { registerV1Routes } from "./routes/v1";
+import { registerHealthRoutes } from "./routes/health.js";
+import { registerV1Routes } from "./routes/v1/index.js";
 
 dotenv.config({ path: resolve(process.cwd(), ".env") });
 dotenv.config({ path: resolve(process.cwd(), "../../.env"), override: false });

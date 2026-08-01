@@ -3,11 +3,20 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
   "exports": {
-    ".": "./src/index.ts",
-    "./env": "./src/env.ts",
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./env": {
+      "types": "./src/env.ts",
+      "default": "./dist/env.js"
+    },
     "./tsconfig.base.json": "./tsconfig.base.json",
     "./eslint.base.mjs": "./eslint.base.mjs",
     "./prettier.base.cjs": "./prettier.base.cjs"

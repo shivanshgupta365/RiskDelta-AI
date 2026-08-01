@@ -2,7 +2,7 @@ import type { FastifyRequest } from "fastify";
 import type { RiskDeltaEdition } from "@riskdelta/types";
 import { loadApiEnv } from "@riskdelta/config";
 import { resolvePremiumAccessDecision, type PremiumAccessDecision } from "@riskdelta/shared";
-import type { AuthContext } from "./context";
+import type { AuthContext } from "./context.js";
 
 export type PremiumApiContext = {
   authKind: "session" | "api_key";

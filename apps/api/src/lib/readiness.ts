@@ -1,6 +1,6 @@
 import { Redis } from "ioredis";
 import { loadApiEnv } from "@riskdelta/config";
-import { prisma } from "../db/prisma";
+import { prisma } from "../db/prisma.js";
 
 const env = loadApiEnv();
 

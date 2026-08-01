@@ -5,7 +5,7 @@ import {
   PolicyDefinitionSchema,
 } from "@riskdelta/policy-engine";
 import { scoreRisk } from "@riskdelta/risk-engine";
-import { executeRuntimeControls } from "./runtime-controls";
+import { executeRuntimeControls } from "./runtime-controls.js";
 
 export type RuntimeProcessingJob = {
   traceId: string;
@@ -661,4 +661,4 @@ export async function processRuntimeTrace({
   };
 }
 
-export { executeRuntimeControls } from "./runtime-controls";
+export { executeRuntimeControls } from "./runtime-controls.js";

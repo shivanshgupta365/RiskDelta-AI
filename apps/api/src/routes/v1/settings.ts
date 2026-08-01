@@ -5,10 +5,10 @@ import {
   requireRoleForOrganization,
   requireScopes,
   type AuthContext,
-} from "../../auth/context";
-import { prisma } from "../../db/prisma";
-import { writeAuditLog } from "../../audit/audit-log";
-import { generateApiKeyValue, getApiKeyParts, hashApiKey } from "../../utils/api-keys";
+} from "../../auth/context.js";
+import { prisma } from "../../db/prisma.js";
+import { writeAuditLog } from "../../audit/audit-log.js";
+import { generateApiKeyValue, getApiKeyParts, hashApiKey } from "../../utils/api-keys.js";
 
 type SettingsQuery = { orgId?: string; limit?: number };
 

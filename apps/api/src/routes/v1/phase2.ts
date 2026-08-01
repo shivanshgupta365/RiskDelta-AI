@@ -1,14 +1,14 @@
 import { z } from "zod";
 import type { FastifyInstance } from "fastify";
-import { prisma } from "../../db/prisma";
-import { writeAuditLog } from "../../audit/audit-log";
+import { prisma } from "../../db/prisma.js";
+import { writeAuditLog } from "../../audit/audit-log.js";
 import {
   requireAuth,
   requireRoleForOrganization,
   requireScopes,
   type AuthContext,
-} from "../../auth/context";
-import { generateApiKeyValue, getApiKeyParts, hashApiKey } from "../../utils/api-keys";
+} from "../../auth/context.js";
+import { generateApiKeyValue, getApiKeyParts, hashApiKey } from "../../utils/api-keys.js";
 
 const projectCreateSchema = z.object({
   name: z.string().min(2),

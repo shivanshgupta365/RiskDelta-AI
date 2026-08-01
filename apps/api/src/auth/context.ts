@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { prisma } from "../db/prisma";
-import { hashApiKey } from "../utils/api-keys";
-import { hasMinimumRole, type Role } from "./rbac";
+import { prisma } from "../db/prisma.js";
+import { hashApiKey } from "../utils/api-keys.js";
+import { hasMinimumRole, type Role } from "./rbac.js";
 
 type SessionAuthContext = {
   kind: "session";
