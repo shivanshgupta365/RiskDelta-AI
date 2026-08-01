@@ -1,4 +1,9 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes, randomUUID } from "crypto";
+import {
+  COMMERCIAL_EDITION,
+  type PremiumAccessBlockedReason,
+  type RiskDeltaEdition,
+} from "@riskdelta/types";
 
 export function createId(prefix: string) {
   return `${prefix}_${randomUUID().replace(/-/g, "")}`;
@@ -30,4 +35,104 @@ export function decryptSecret(ciphertext: string, secret: string) {
   const decipher = createDecipheriv("aes-256-gcm", key, iv);
   decipher.setAuthTag(tag);
   return Buffer.concat([decipher.update(payload), decipher.final()]).toString("utf8");
+}
+
+export const ROLE_RANK = {
+  VIEWER: 10,
+  OPERATOR: 20,
+  ADMIN: 30,
+  OWNER: 40,
+} as const;
+
+export type Role = keyof typeof ROLE_RANK;
+
+export function normalizeRole(role: string | null | undefined): Role {
+  const candidate = String(role ?? "VIEWER").toUpperCase();
+  if (candidate in ROLE_RANK) {
+    return candidate as Role;
+  }
+
+  return "VIEWER";
+}
+
+export function hasMinimumRole(actual: string | null | undefined, required: Role) {
+  return ROLE_RANK[normalizeRole(actual)] >= ROLE_RANK[required];
+}
+
+export type PremiumAccessDecision =
+  | {
+      allowed: true;
+      minimumRole: Role;
+      role: Role;
+      edition: RiskDeltaEdition;
+    }
+  | {
+      allowed: false;
+      reason: PremiumAccessBlockedReason;
+      minimumRole: Role;
+      role: Role | null;
+      edition: RiskDeltaEdition;
+    };
+
+export function resolvePremiumAccessDecision({
+  edition,
+  isAuthenticated,
+  isOnboarded,
+  role,
+  minimumRole = "ADMIN",
+}: {
+  edition: RiskDeltaEdition;
+  isAuthenticated: boolean;
+  isOnboarded: boolean;
+  role?: string | null;
+  minimumRole?: Role;
+}): PremiumAccessDecision {
+  const normalizedRole = role ? normalizeRole(role) : null;
+
+  if (!isAuthenticated) {
+    return {
+      allowed: false,
+      reason: "unauthenticated",
+      minimumRole,
+      role: normalizedRole,
+      edition,
+    };
+  }
+
+  if (!isOnboarded) {
+    return {
+      allowed: false,
+      reason: "not_onboarded",
+      minimumRole,
+      role: normalizedRole,
+      edition,
+    };
+  }
+
+  if (edition !== COMMERCIAL_EDITION) {
+    return {
+      allowed: false,
+      reason: "community_build",
+      minimumRole,
+      role: normalizedRole,
+      edition,
+    };
+  }
+
+  if (!normalizedRole || !hasMinimumRole(normalizedRole, minimumRole)) {
+    return {
+      allowed: false,
+      reason: "insufficient_role",
+      minimumRole,
+      role: normalizedRole,
+      edition,
+    };
+  }
+
+  return {
+    allowed: true,
+    minimumRole,
+    role: normalizedRole,
+    edition,
+  };
 }

@@ -1,0 +1,56 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.6.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Prepare env
+        run: cp .env.example .env
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Secret scan
+        run: pnpm secrets:scan
+
+      - name: Public env audit
+        run: pnpm security:public-env
+
+      - name: Build web image
+        run: docker build -f apps/web/Dockerfile .
+
+      - name: Build api image
+        run: docker build -f apps/api/Dockerfile .
+
+      - name: Build worker image
+        run: docker build -f apps/worker/Dockerfile .

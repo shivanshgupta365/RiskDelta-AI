@@ -1,14 +1,16 @@
-import { CommercialFeatureNotice } from "@/components/commercial/commercial-feature-notice";
 import { requirePlatformAccess } from "@/server/auth/session";
+import { renderPremiumFeaturePage } from "@/server/premium-page";
 
 export default async function PoliciesPage() {
-  await requirePlatformAccess();
+  const context = await requirePlatformAccess();
 
-  return (
-    <CommercialFeatureNotice
-      feature="policies"
-      title="Policy authoring is reserved for the commercial edition"
-      description="The public source-available repo keeps trace ingestion, TraceVault, and Quickstart runnable. Deterministic policy inventory, simulation, and rule editing are withheld from this branch."
-    />
-  );
+  return renderPremiumFeaturePage({
+    feature: "policies",
+    context,
+    communityTitle: "Policy authoring is reserved for the commercial edition",
+    communityDescription:
+      "The public source-available repo keeps trace ingestion, TraceVault, and Quickstart runnable. Deterministic policy inventory, simulation, and rule editing are withheld from this branch.",
+    forbiddenDescription:
+      "This deployment can expose commercial policy workflows, but only ADMIN and OWNER members can view or modify policy inventory, simulations, and rule editing surfaces.",
+  });
 }

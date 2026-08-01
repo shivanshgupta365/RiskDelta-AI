@@ -3,6 +3,12 @@ import { z } from "zod";
 export const RuntimeVerdictSchema = z.enum(["ALLOW", "TRANSFORM", "BLOCK", "REVIEW"]);
 export const RuntimeSeveritySchema = z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]);
 export const RiskDeltaEditionSchema = z.enum(["community-source-available", "commercial"]);
+export const PremiumAccessBlockedReasonSchema = z.enum([
+  "unauthenticated",
+  "not_onboarded",
+  "insufficient_role",
+  "community_build",
+]);
 
 export const COMMUNITY_SOURCE_AVAILABLE_EDITION = "community-source-available";
 export const COMMERCIAL_EDITION = "commercial";
@@ -39,6 +45,7 @@ export type RuntimeVerdict = z.infer<typeof RuntimeVerdictSchema>;
 export type RuntimeSeverity = z.infer<typeof RuntimeSeveritySchema>;
 export type RiskDeltaEdition = z.infer<typeof RiskDeltaEditionSchema>;
 export type CommercialFeatureId = (typeof commercialFeatureIds)[number];
+export type PremiumAccessBlockedReason = z.infer<typeof PremiumAccessBlockedReasonSchema>;
 
 export const InteractiveRouteStateSchema = z.object({
   topic: z.string().optional(),

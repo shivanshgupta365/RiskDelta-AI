@@ -1,0 +1,12 @@
+{$PUBLIC_DOMAIN} {
+  encode gzip zstd
+
+  @api path /v1/* /healthz /readyz
+  handle @api {
+    reverse_proxy api:4100
+  }
+
+  handle {
+    reverse_proxy web:3000
+  }
+}

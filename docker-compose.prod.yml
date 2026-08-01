@@ -1,0 +1,128 @@
+services:
+  caddy:
+    image: caddy:2.9-alpine
+    container_name: riskdelta-caddy
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      PUBLIC_DOMAIN: ${PUBLIC_DOMAIN:-localhost}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+  web:
+    image: ${GHCR_REPOSITORY:-ghcr.io/shivanshsguppta/riskdelta-ai}/web:${IMAGE_TAG:-local}
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: riskdelta-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+      NEXT_PUBLIC_RISKDELTA_EDITION: ${NEXT_PUBLIC_RISKDELTA_EDITION:-community-source-available}
+      RISKDELTA_EDITION: ${RISKDELTA_EDITION:-community-source-available}
+      RISKDELTA_PREMIUM_MODULE_PATH: ${RISKDELTA_PREMIUM_MODULE_PATH:-}
+      RISKDELTA_API_URL: http://api:4100
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      AUTH_SECRET: ${AUTH_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_PORT: ${MINIO_PORT}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_USE_SSL: ${MINIO_USE_SSL}
+      DEMO_USER_EMAIL: ${DEMO_USER_EMAIL}
+      DEMO_USER_PASSWORD: ${DEMO_USER_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/readyz >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 30s
+
+  api:
+    image: ${GHCR_REPOSITORY:-ghcr.io/shivanshsguppta/riskdelta-ai}/api:${IMAGE_TAG:-local}
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: riskdelta-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      RISKDELTA_EDITION: ${RISKDELTA_EDITION:-community-source-available}
+      RISKDELTA_PREMIUM_MODULE_PATH: ${RISKDELTA_PREMIUM_MODULE_PATH:-}
+      API_HOST: 0.0.0.0
+      API_PORT: 4100
+      WEB_APP_ORIGIN: ${NEXT_PUBLIC_APP_URL}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-}
+      API_RATE_LIMIT_MAX: ${API_RATE_LIMIT_MAX:-200}
+      API_RATE_LIMIT_WINDOW: ${API_RATE_LIMIT_WINDOW:-1 minute}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      AUTH_SECRET: ${AUTH_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_PORT: ${MINIO_PORT}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_USE_SSL: ${MINIO_USE_SSL}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4100/readyz >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 20s
+
+  worker:
+    image: ${GHCR_REPOSITORY:-ghcr.io/shivanshsguppta/riskdelta-ai}/worker:${IMAGE_TAG:-local}
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile
+    container_name: riskdelta-worker
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      RISKDELTA_EDITION: ${RISKDELTA_EDITION:-community-source-available}
+      RISKDELTA_PREMIUM_MODULE_PATH: ${RISKDELTA_PREMIUM_MODULE_PATH:-}
+      WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-5}
+      WORKER_HEALTH_PORT: ${WORKER_HEALTH_PORT:-4101}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      AUTH_SECRET: ${AUTH_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_PORT: ${MINIO_PORT}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_USE_SSL: ${MINIO_USE_SSL}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:${WORKER_HEALTH_PORT:-4101}/readyz >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 20s
+
+volumes:
+  caddy-data:
+  caddy-config:

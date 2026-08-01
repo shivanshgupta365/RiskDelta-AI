@@ -46,6 +46,8 @@ This repository publishes the RiskDelta community/source-available baseline unde
 
 These areas preserve public interfaces and disabled entrypoints, but withhold premium operator workflows and enterprise-specific implementation.
 
+Private deployments can mount a premium adapter through `RISKDELTA_PREMIUM_MODULE_PATH` without changing the public route contracts.
+
 ### Internal Do Not Publish
 - Hosted secrets
 - Commercial connectors/provider credentials
@@ -58,4 +60,5 @@ These areas preserve public interfaces and disabled entrypoints, but withhold pr
 
 - Public routes and packages must remain runnable without commercial-only code paths.
 - Commercial features must fail closed with explicit placeholder UX or `403 commercial_feature_unavailable` API responses.
+- Premium/private deployments must attach private implementation through the adapter boundary rather than patching public route contracts in place.
 - Secrets, credentials, signing material, and private hosted logic must never be committed here.

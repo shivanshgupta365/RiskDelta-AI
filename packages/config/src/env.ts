@@ -5,6 +5,7 @@ const baseSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
   RISKDELTA_EDITION: RiskDeltaEditionSchema.default("community-source-available"),
+  RISKDELTA_PREMIUM_MODULE_PATH: z.string().min(1).optional(),
   DATABASE_URL: z.string().min(1),
   REDIS_URL: z.string().min(1),
   AUTH_SECRET: z.string().min(32),
@@ -36,6 +37,7 @@ const apiSchema = baseSchema.extend({
 
 const workerSchema = baseSchema.extend({
   WORKER_CONCURRENCY: z.coerce.number().int().positive().default(5),
+  WORKER_HEALTH_PORT: z.coerce.number().int().positive().default(4101),
 });
 
 function parse<T extends z.ZodTypeAny>(schema: T, source: Record<string, string | undefined>) {

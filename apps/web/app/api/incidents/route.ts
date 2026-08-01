@@ -1,5 +1,5 @@
-import { commercialFeatureResponse } from "@/server/commercial-response";
+import { resolvePremiumWebApiRoute } from "@/server/premium-route";
 
-export async function GET() {
-  return commercialFeatureResponse("incidents");
+export async function GET(request: Request) {
+  return resolvePremiumWebApiRoute({ feature: "incidents", method: "GET", request });
 }

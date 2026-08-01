@@ -451,6 +451,37 @@ pnpm dev
 
 ---
 
+## Production deployment
+
+RiskDelta now includes a single-VM production deployment baseline:
+
+- Dockerfiles:
+  - [`apps/web/Dockerfile`](apps/web/Dockerfile)
+  - [`apps/api/Dockerfile`](apps/api/Dockerfile)
+  - [`apps/worker/Dockerfile`](apps/worker/Dockerfile)
+- Production compose:
+  - [`docker-compose.prod.yml`](docker-compose.prod.yml)
+- Reverse proxy + TLS:
+  - [`deploy/Caddyfile`](deploy/Caddyfile)
+- VM release script:
+  - [`scripts/release-vm.sh`](scripts/release-vm.sh)
+- Production smoke script:
+  - [`scripts/smoke-prod.sh`](scripts/smoke-prod.sh)
+
+Managed dependencies are still recommended for production:
+
+- PostgreSQL
+- Redis
+- S3-compatible object storage
+
+See:
+
+- [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)
+- [`docs/BACKUP_RECOVERY.md`](docs/BACKUP_RECOVERY.md)
+- [`docs/YC_DEMO.md`](docs/YC_DEMO.md)
+
+---
+
 ## 🧪 Development Commands
 
 ```bash
@@ -544,16 +575,31 @@ Move fast with control.
 
 ## 🧪 Local UI Screenshots
 
-Captured from a live local run to verify UI rendering and route behavior.
+Captured from a live authenticated local run to verify UI rendering, seeded data, and operator workflows.
 
-> Add screenshots under `docs/screenshots/` and update paths below.
+### Marketing hero
 
-```txt
-docs/screenshots/marketing-integrations.png
-docs/screenshots/app-overview.png
-docs/screenshots/app-quickstart-runtime-usage.png
-docs/screenshots/app-tracevault-working.png
-```
+![RiskDelta marketing hero](docs/screenshots/launch-2026-08-02/01-marketing-hero.png)
+
+### Operator overview
+
+![RiskDelta operator overview](docs/screenshots/launch-2026-08-02/02-console-overview.png)
+
+### Working quickstart
+
+![RiskDelta quickstart](docs/screenshots/launch-2026-08-02/03-quickstart-working.png)
+
+### TraceVault queue
+
+![RiskDelta TraceVault queue](docs/screenshots/launch-2026-08-02/04-tracevault-queue.png)
+
+### Blocked production trace
+
+![RiskDelta blocked trace evidence](docs/screenshots/launch-2026-08-02/05-blocked-trace-evidence.png)
+
+### Application coverage
+
+![RiskDelta application coverage](docs/screenshots/launch-2026-08-02/06-applications-coverage.png)
 
 ---
 
