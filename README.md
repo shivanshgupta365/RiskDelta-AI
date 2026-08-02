@@ -60,7 +60,7 @@
 
 ## 🧪 Live Product Screenshots
 
-Captured from the public Vercel deployment with the read-only demo account and seeded showcase workspace.
+Captured from the public Vercel deployment as product usage workflow. 
 
 ### Marketing hero
 
