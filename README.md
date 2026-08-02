@@ -58,6 +58,36 @@
 
 ---
 
+## 🧪 Live Product Screenshots
+
+Captured from the public Vercel deployment with the read-only demo account and seeded showcase workspace.
+
+### Marketing hero
+
+![RiskDelta marketing hero](docs/screenshots/vercel-launch-2026-08-02/01-landing-hero.png)
+
+### Operator overview
+
+![RiskDelta operator overview](docs/screenshots/vercel-launch-2026-08-02/02-operator-overview.png)
+
+### Application coverage
+
+![RiskDelta application coverage](docs/screenshots/vercel-launch-2026-08-02/03-applications.png)
+
+### TraceVault queue
+
+![RiskDelta TraceVault queue](docs/screenshots/vercel-launch-2026-08-02/04-tracevault.png)
+
+### Synchronously evaluated production trace
+
+![RiskDelta production trace evidence](docs/screenshots/vercel-launch-2026-08-02/05-trace-detail.png)
+
+### Working quickstart
+
+![RiskDelta quickstart](docs/screenshots/vercel-launch-2026-08-02/06-quickstart.png)
+
+---
+
 ## ⚡ What is RiskDelta?
 
 **RiskDelta** is a multi-tenant AI runtime control plane designed for production LLM systems, AI agents, copilots, and enterprise AI applications.
@@ -590,36 +620,6 @@ RiskDelta gives teams a third path:
 ```txt
 Move fast with control.
 ```
-
----
-
-## 🧪 Live Product Screenshots
-
-Captured from the public Vercel deployment with the read-only demo account and seeded showcase workspace.
-
-### Marketing hero
-
-![RiskDelta marketing hero](docs/screenshots/vercel-launch-2026-08-02/01-landing-hero.png)
-
-### Operator overview
-
-![RiskDelta operator overview](docs/screenshots/vercel-launch-2026-08-02/02-operator-overview.png)
-
-### Application coverage
-
-![RiskDelta application coverage](docs/screenshots/vercel-launch-2026-08-02/03-applications.png)
-
-### TraceVault queue
-
-![RiskDelta TraceVault queue](docs/screenshots/vercel-launch-2026-08-02/04-tracevault.png)
-
-### Synchronously evaluated production trace
-
-![RiskDelta production trace evidence](docs/screenshots/vercel-launch-2026-08-02/05-trace-detail.png)
-
-### Working quickstart
-
-![RiskDelta quickstart](docs/screenshots/vercel-launch-2026-08-02/06-quickstart.png)
 
 ---
 
