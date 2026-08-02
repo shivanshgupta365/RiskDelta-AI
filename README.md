@@ -31,6 +31,8 @@
 <p align="center">
   <a href="#-quick-start">Quick Start</a>
   ·
+  <a href="#-product-demo">Product Demo</a>
+  ·
   <a href="#-architecture">Architecture</a>
   ·
   <a href="#-runtime-flow">Runtime Flow</a>
@@ -39,6 +41,17 @@
   ·
   <a href="#-license">License</a>
 </p>
+
+---
+
+## 🎥 Product demo
+
+[![Play the RiskDelta AI product launch video](./docs/product-demo/riskdelta-product-launch-poster.png)](https://cdn.jsdelivr.net/gh/shivanshgupta365/RiskDelta-AI@main/docs/product-demo/riskdelta-product-launch.mp4)
+
+**[▶ Play the 41-second product launch video with sound](https://cdn.jsdelivr.net/gh/shivanshgupta365/RiskDelta-AI@main/docs/product-demo/riskdelta-product-launch.mp4)**
+
+- Live app: https://riskdelta-ai.vercel.app
+- Demo flow: Runtime event → Risk score → Policy verdict → Enforcement → TraceVault evidence
 
 ---
 
@@ -604,14 +617,6 @@ Captured from the public Vercel deployment with the read-only demo account and s
 ### Working quickstart
 
 ![RiskDelta quickstart](docs/screenshots/vercel-launch-2026-08-02/06-quickstart.png)
-
----
-
-## 🎥 Demo
-
-- Live app: https://riskdelta-ai.vercel.app
-- GitHub: https://github.com/shivanshgupta365/RiskDelta-AI
-- Demo flow: Runtime event → Risk score → Policy verdict → Enforcement → TraceVault evidence
 
 ---
 
