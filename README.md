@@ -2,7 +2,10 @@
   <img src="docs/brand/riskdelta-product-banner.png" alt="RiskDelta AI runtime control plane" width="100%" />
 </p>
 
-<h1 align="center">⚡ RiskDelta AI</h1>
+<h1 align="center">
+  <img src="apps/web/app/icon.svg" alt="RiskDelta logo" width="52" />
+  RiskDelta AI
+</h1>
 
 <p align="center">
   <strong>Autonomous Risk Intelligence Control Plane for AI Systems, Agents & Copilots</strong>
